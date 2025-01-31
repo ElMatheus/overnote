@@ -11,14 +11,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   password      String?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  notesOwned    Note[]       @relation(name: "Owner")
+  notesUpdated  Note[]       @relation(name: "UpdatedBy")
+  SharedNote    SharedNote[]
 }
 
 model Account {
@@ -54,4 +57,31 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  ownerId     String
+  updatedById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isPrivate   Boolean
+  owner       User     @relation(name: "Owner", fields: [ownerId], references: [id], onDelete: Cascade)
+  updatedBy   User     @relation(name: "UpdatedBy", fields: [updatedById], references: [id], onDelete: Cascade)
+
+  SharedNote SharedNote[]
+}
+
+model SharedNote {
+  id      String  @id @default(cuid())
+  noteId  String
+  userId  String
+  canEdit Boolean @default(false)
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([noteId, userId])
 }
