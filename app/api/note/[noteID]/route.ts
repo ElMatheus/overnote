@@ -13,7 +13,7 @@ export async function PUT(request: Request, { params }: { params: { noteID: stri
     }
 
     const existingNote = await prisma.note.findUnique({
-      where: { id: noteID },
+      where: { id: noteID }
     });
 
     if (!existingNote) {
@@ -56,6 +56,20 @@ export async function PUT(request: Request, { params }: { params: { noteID: stri
         { status: 400 }
       );
     }
+
+    const sharedNote = await prisma.sharedNote.findUnique({
+      where: { noteId_userId: { noteId: noteID, userId: updatedIdUser } },
+    });
+
+    const isOwner = existingNote.ownerId === updatedIdUser;
+
+    if (!isOwner && !sharedNote?.canEdit) {
+      return NextResponse.json(
+        { error: "You don't have permission to edit this note" },
+        { status: 400 }
+      );
+    }
+
 
     const updatedNote = await prisma.note.update({
       where: { id: noteID },
@@ -135,6 +149,8 @@ export async function GET(request: Request, { params }: { params: { noteID: stri
 
     const note = await prisma.note.findUnique({
       where: { id: noteID },
+      include: { SharedNote: true },
+
     });
 
     if (!note) {

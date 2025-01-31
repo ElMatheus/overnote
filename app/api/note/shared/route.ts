@@ -43,6 +43,22 @@ export async function POST(req: Request) {
       );
     }
 
+    const existingSharedNote = await prisma.sharedNote.findUnique({
+      where: {
+        noteId_userId: {
+          noteId,
+          userId,
+        },
+      },
+    });
+
+    if (existingSharedNote) {
+      return NextResponse.json(
+        { error: "Note is already shared with this user" },
+        { status: 400 }
+      );
+    }
+
     const sharedNote = await prisma.sharedNote.create({
       data: {
         noteId,

@@ -75,6 +75,7 @@ export async function GET(req: Request) {
 
     const notes = await prisma.note.findMany({
       where: { ownerId: userId },
+      include: { SharedNote: true },
     });
 
     if (notes.length == 0) {
