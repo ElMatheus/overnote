@@ -10,6 +10,7 @@ import HeadingExtension from "@tiptap/extension-heading";
 import Placeholder from "@tiptap/extension-placeholder";
 import BulletList from "@tiptap/extension-bullet-list";
 import ListItem from "@tiptap/extension-list-item";
+import { SettingsContainer } from "@/components/settings-container";
 
 export default function NotePage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function NotePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [idUser, setIdUser] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -75,14 +77,14 @@ export default function NotePage() {
     }, 1000);
 
     return () => clearTimeout(handler);
-  }, [note, id]);
+  }, [note, id, isPrivate]);
 
   return (
     <div className="flex flex-col min-h-screen p-6">
       <div className="flex items-center justify-between mb-6">
         <ChevronLeft onClick={() => router.back()} size={32} className="cursor-pointer" />
         <Save className={`rounded-full p-2 ${isSaving ? "bg-indigo-400" : "bg-gray-200"}`} size={45} />
-        <Settings size={32} className="cursor-pointer" />
+        <Settings onClick={() => setShowSettings(true)} size={32} className="cursor-pointer" />
       </div>
       <div className="h-full p-6 max-w-7xl mx-auto w-full">
         <input
@@ -110,6 +112,14 @@ export default function NotePage() {
           <EditorContent editor={editor} className="font-normal focus:outline-none break-words" />
         </div>
       </div>
+
+      {showSettings && (
+        <SettingsContainer
+          isPrivate={isPrivate}
+          setIsPrivate={setIsPrivate}
+          setShowSettings={setShowSettings}
+        />
+      )}
     </div>
   );
 }
