@@ -61,6 +61,7 @@ export default function Page() {
           notes ? (
             notes.map((note: any) => (
               <CardNotes
+                id={note.id}
                 title={note.title}
                 lastUpdatedUser={note.updatedBy.name}
                 lastUpdatedDate={note.updatedAt}
