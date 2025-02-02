@@ -9,13 +9,13 @@ const iconMap = {
   Award: Award,
 };
 
-export function Category({ name, Icon }: { name: string, Icon: CategoryIcon }) {
+export function Category({ name, Icon, selected }: { name: string, Icon: CategoryIcon, selected: boolean }) {
   const IconComponent = iconMap[Icon];
 
   return (
-    <div className="flex flex-row px-2 py-0 rounded-full bg-white border-[1px] border-[#1E201F] gap-1 items-center">
-      <IconComponent size={20} />
-      <h2 className='text-lg text-[#1E201F] font-normal'>{name}</h2>
+    <div className={`flex flex-row px-2 py-0 rounded-full border-[1px] gap-1 items-center ${selected ? 'bg-black border-black' : 'bg-white border-[#1E201F]'}`}>
+      <IconComponent size={20} color={selected ? 'white' : '#1E201F'} />
+      <h2 className={`text-lg font-normal ${selected ? 'text-white' : 'text-[#1E201F]'}`}>{name}</h2>
     </div>
   );
 }

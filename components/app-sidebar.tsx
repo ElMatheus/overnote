@@ -22,7 +22,7 @@ export async function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarContent className="flex gap-2 p-2 pt-8 ">
+      <SidebarContent className="flex gap-4 p-2 pt-8 ">
         <Link
           href="/dashboard"
           className="flex flex-row items-center gap-2 "

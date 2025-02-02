@@ -1,20 +1,66 @@
+"use client"
+
 import { CardNotes } from "@/components/notesrecent-card";
 import { ArrowRight } from 'lucide-react';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getRecentsNotes } from "@/actions/notes.actions";
+import { getSession } from "next-auth/react";
 
 export default function Page() {
+  const [notes, setNotes] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchNotes() {
+      const session = await getSession();
+      if (session?.user?.id) {
+        const data = await getRecentsNotes(session.user.id);
+        setNotes(data);
+      }
+    }
+
+    fetchNotes();
+  }, []);
+
   return (
     <div className="font-[family-name:var(--font-geist-sans)] flex flex-col py-5 px-8">
       <h1 className="text-4xl font-normal">Recent Notes</h1>
       <div className="flex flex-row justify-between pt-7 pb-7">
-        <CardNotes id={"ds"} title={"Teste"} content={"dfdfdfdf"} />
-        <CardNotes id={"ds"} title={"Teste"} content={"dfdfdfdf"} />
-        <CardNotes id={"ds"} title={"Teste"} content={"dfdfdfdf"} />
+        {
+          notes ? (
+            [0, 1, 2].map(index => (
+              notes[index] ? (
+                <CardNotes
+                  key={index}
+                  id={notes[index]._id}
+                  title={notes[index].title}
+                  content={notes[index].content}
+                />
+              ) : (
+                <CardNotes
+                  key={index}
+                  id={"ds"}
+                  title={"Crie uma nova anotação"}
+                  content={"Clique aqui para adicionar uma nova anotação."}
+                />
+              )
+            ))
+          ) : (
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+              <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                <div className="aspect-video rounded-xl bg-muted/50" />
+                <div className="aspect-video rounded-xl bg-muted/50" />
+                <div className="aspect-video rounded-xl bg-muted/50" />
+              </div>
+            </div>
+          )
+        }
       </div>
       <div className="flex flex-row justify-end">
-        <button className="flex flex-row gap-2 bg-[#1E201F] px-3.5 py-4 rounded-full text-white items-center">
+        <Link href="/notes" className="flex flex-row gap-2 bg-[#1E201F] px-3.5 py-4 rounded-full text-white items-center">
           <p className="font-extralight">View All</p>
           <ArrowRight size={23} color="#ffffff" strokeWidth={1.4} />
-        </button>
+        </Link>
       </div>
 
       <div className="flex justify-center py-7">

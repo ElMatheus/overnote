@@ -65,6 +65,9 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
+    const recent = searchParams.get('recent');
+    const privacy = searchParams.get('privacy');
+    const position = searchParams.get('position');
 
     if (!userId) {
       return NextResponse.json(
@@ -73,9 +76,66 @@ export async function GET(req: Request) {
       );
     }
 
+    let whereClause: any = {
+      OR: [
+        { ownerId: userId },
+        { SharedNote: { some: { userId } } },
+      ],
+    };
+
+    if (privacy) {
+      switch (privacy) {
+        case 'public':
+          whereClause.isPrivate = false;
+          break;
+        case 'private':
+          whereClause.isPrivate = true;
+          break;
+        default:
+          return NextResponse.json(
+            { error: "Invalid privacy filter" },
+            { status: 400 }
+          );
+      }
+    }
+
+    if (position) {
+      switch (position) {
+        case 'owner':
+          whereClause.ownerId = userId;
+          break;
+        case 'shared':
+          whereClause.SharedNote = { some: { userId } };
+          break;
+        default:
+          return NextResponse.json(
+            { error: "Invalid position filter" },
+            { status: 400 }
+          );
+      }
+    }
+
+    if (recent) {
+      const notes = await prisma.note.findMany({
+        where: { ...whereClause, ownerId: userId },
+        orderBy: { updatedAt: "desc" },
+        take: 3,
+      });
+
+      if (notes.length == 0) {
+        return NextResponse.json(
+          { error: "No notes found" },
+          { status: 400 }
+        );
+      }
+
+      return NextResponse.json(notes);
+    }
+
     const notes = await prisma.note.findMany({
-      where: { ownerId: userId },
-      include: { SharedNote: true },
+      where: whereClause,
+      include: { SharedNote: true, owner: true, updatedBy: true },
+      orderBy: { updatedAt: "desc" },
     });
 
     if (notes.length == 0) {

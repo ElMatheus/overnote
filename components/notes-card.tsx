@@ -13,9 +13,9 @@ export function CardNotes({ title, lastUpdatedUser, lastUpdatedDate, privacy, po
       <div className='flex flex-row gap-2'>
         {
           privacy ? (
-            <Globe strokeWidth={1.5} size={30} />
-          ) : (
             <Lock strokeWidth={1.5} size={30} />
+          ) : (
+            <Globe strokeWidth={1.5} size={30} />
           )
         }
         {
