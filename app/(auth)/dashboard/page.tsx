@@ -1,19 +1,23 @@
 "use client"
-
 import { CardNotes } from "@/components/notesrecent-card";
 import { ArrowRight } from 'lucide-react';
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getRecentsNotes } from "@/actions/notes.actions";
+import { getRecentsNotes, createNote } from "@/actions/notes.actions";
 import { getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [notes, setNotes] = useState<any>(null);
+  const [userId, setUserId] = useState<string>("");
+  const router = useRouter();
+  const [inpTitle, setInpTitle] = useState<string>("");
 
   useEffect(() => {
     async function fetchNotes() {
       const session = await getSession();
       if (session?.user?.id) {
+        setUserId(session.user.id);
         const data = await getRecentsNotes(session.user.id);
         setNotes(data);
       }
@@ -21,6 +25,23 @@ export default function Page() {
 
     fetchNotes();
   }, []);
+
+  const handleCreateNote = async () => {
+    const newNote = await createNote(null, userId);
+    if (newNote.status == "success") {
+      router.push(`/notes/${newNote.data.id}`);
+    }
+  }
+  const handleCreateNoteTitle = async () => {
+    if (inpTitle) {
+      const newNote = await createNote(inpTitle, userId);
+      if (newNote.status == "success") {
+        router.push(`/notes/${newNote.data.id}`);
+      }
+    }
+  }
+
+
 
   return (
     <div className="font-[family-name:var(--font-geist-sans)] flex flex-col py-5 px-8">
@@ -30,19 +51,23 @@ export default function Page() {
           notes ? (
             [0, 1, 2].map(index => (
               notes[index] ? (
-                <CardNotes
-                  key={index}
-                  id={notes[index]._id}
-                  title={notes[index].title}
-                  content={notes[index].content}
-                />
+                <Link href={`/notes/${notes[index].id}`} key={index}>
+                  <CardNotes
+                    key={index}
+                    id={notes[index].id}
+                    title={notes[index].title}
+                    content={notes[index].content}
+                  />
+                </Link>
               ) : (
-                <CardNotes
-                  key={index}
-                  id={"ds"}
-                  title={"Crie uma nova anotação"}
-                  content={"Clique aqui para adicionar uma nova anotação."}
-                />
+                <button onClick={handleCreateNote} key={index}>
+                  <CardNotes
+                    key={index}
+                    id={"ds"}
+                    title={"Crie uma nova anotação"}
+                    content={"Clique aqui para adicionar uma nova anotação."}
+                  />
+                </button>
               )
             ))
           ) : (
@@ -69,8 +94,8 @@ export default function Page() {
             <h1 className="text-6xl font-semibold text-center text-[#1E201F] max-w-[50%]">Choose a title for your new note</h1>
             <p className="font-light text-center text-3xl text-[#1E201F] max-w-[70%] mt-4">Notes help you capture inspirations, plan tasks, and keep everything within reach. Give your new note a name and start now!</p>
             <div className="bg-white p-3 pl-5 rounded-tl-full rounded-tr-full rounded-br-full flex flex-row justify-between items-center max-w-[70%] mt-6">
-              <input className="focus:outline-none font-normal text-2xl text-[#1E201F] flex-grow" placeholder="Enter your note title..." type="text" />
-              <button className="flex flex-row gap-2 bg-[#1E201F] px-3.5 py-4 rounded-full text-white items-center ml-4">
+              <input onChange={(e) => setInpTitle(e.target.value)} className="focus:outline-none font-normal text-2xl text-[#1E201F] flex-grow" placeholder="Enter your note title..." type="text" />
+              <button onClick={handleCreateNoteTitle} className="flex flex-row gap-2 bg-[#1E201F] px-3.5 py-4 rounded-full text-white items-center ml-4">
                 <p className="font-extralight">Get Started</p>
                 <ArrowRight size={23} color="#ffffff" strokeWidth={1.4} />
               </button>

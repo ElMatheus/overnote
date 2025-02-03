@@ -12,7 +12,6 @@ export function CardNotes({ id, title, content }: { id: string, title: string, c
         <h1 className='font-semibold text-4xl'>{title}</h1>
         <p className='font-normal text-lg'>{content}</p>
       </div>
-
     </div>
   );
 }

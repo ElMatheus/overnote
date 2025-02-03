@@ -69,3 +69,24 @@ export async function updateNoteById(noteId: string, note: any, userId: string, 
     console.error('Error fetching data updateNoteById', error);
   }
 }
+
+export async function createNote(title: string | null, userId: string) {
+  try {
+    const response = await fetch(`/api/note`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: title || 'New Note',
+        content: 'Write your note here...',
+        userId: userId,
+        isPrivate: false,
+      }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data createNote', error);
+  }
+}
