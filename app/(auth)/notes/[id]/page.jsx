@@ -20,6 +20,7 @@ export default function NotePage() {
   const [idUser, setIdUser] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [usersShared, setUsersShared] = useState([]);
 
   const editor = useEditor({
     extensions: [
@@ -57,6 +58,7 @@ export default function NotePage() {
       if (data.status === "success") {
         setNote({ title: data.data.title, content: data.data.content });
         setIsPrivate(data.data.isPrivate);
+        setUsersShared(data.data.SharedNote);
       }
     }
     fetchNote();
@@ -118,6 +120,7 @@ export default function NotePage() {
           isPrivate={isPrivate}
           setIsPrivate={setIsPrivate}
           setShowSettings={setShowSettings}
+          users={usersShared}
         />
       )}
     </div>

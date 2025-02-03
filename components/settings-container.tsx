@@ -1,4 +1,8 @@
-export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings }: { isPrivate: boolean, setIsPrivate: (isPrivate: boolean) => void, setShowSettings: (showSettings: boolean) => void }) {
+import { useState } from "react";
+
+export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, users }: { isPrivate: boolean, setIsPrivate: Function, setShowSettings: Function, users: any }) {
+  const [username, setUsername] = useState("");
+
   return (
     <div className="fixed inset-y-0 right-0 w-1/3 bg-[#1E201F] shadow-lg p-6">
       <div className="flex flex-row justify-between items-center mb-6">
@@ -18,10 +22,34 @@ export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings }: 
           <input type="radio" id="public" name="visibility" value="public" checked={!isPrivate} onChange={() => setIsPrivate(false)} />
           <label htmlFor="public" className="text-white font-light text-base">Public</label>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 mb-4">
           <input type="radio" id="private" name="visibility" value="private" checked={isPrivate} onChange={() => setIsPrivate(true)} />
           <label htmlFor="private" className="text-white font-light text-base">Private</label>
         </div>
+
+        {/* Campo para adicionar usuários */}
+        <div className="mt-4">
+          <h1 className="text-white font-normal text-xl">Add Users</h1>
+          <div className="flex gap-2 mt-2">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="p-2 rounded bg-gray-800 text-white w-full"
+              placeholder="Enter username"
+            />
+            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+              Add
+            </button>
+          </div>
+          <ul className="mt-2 text-white">
+            {users && users.map((user: any) => (
+              <li key={user.id} className="bg-gray-700 p-2 rounded mt-1">{user.user.name}</li>
+            ))}
+          </ul>
+        </div>
+
+
       </div>
     </div>
   );

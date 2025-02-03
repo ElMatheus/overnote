@@ -149,7 +149,13 @@ export async function GET(request: Request, { params }: { params: { noteID: stri
 
     const note = await prisma.note.findUnique({
       where: { id: noteID },
-      include: { SharedNote: true },
+      include: {
+        SharedNote: {
+          include: {
+            user: true
+          }
+        }
+      }
 
     });
 
