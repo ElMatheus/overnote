@@ -71,4 +71,4 @@ Uma plataforma moderna e intuitiva para criar, organizar e compartilhar anotaç�
 
 ## 🌐 Acesse a Aplicação
 
-Acesse a aplicação em: [teste.com.br](http://teste.com.br)
+Acesse a aplicação em: [overnote-six.vercel.app](https://overnote-six.vercel.app/dashboard)
