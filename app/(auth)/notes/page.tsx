@@ -10,7 +10,22 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   const router = useRouter();
-  const [notes, setNotes] = useState<any>(null);
+  interface Note {
+    id: string;
+    title: string;
+    content: string;
+    updatedBy: {
+      name: string;
+    };
+    updatedAt: string;
+    isPrivate: boolean;
+    ownerId: string;
+    SharedNote: {
+      canEdit: boolean;
+    };
+  }
+
+  const [notes, setNotes] = useState<Note[] | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [privacy, setPrivacy] = useState<string | null>(null);
   const [position, setPosition] = useState<string | null>(null);
@@ -69,8 +84,9 @@ export default function Page() {
       <div className="flex flex-col gap-4 w-full">
         {
           notes != null && notes.length > 0 ? (
-            notes.map((note: any) => (
+            notes.map((note: Note) => (
               <CardNotes
+                key={note.id}
                 id={note.id}
                 title={note.title}
                 lastUpdatedUser={note.updatedBy.name}

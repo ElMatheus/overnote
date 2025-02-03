@@ -8,7 +8,24 @@ import { getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [notes, setNotes] = useState<any>(null);
+
+
+  interface Note {
+    id: string;
+    title: string;
+    content: string;
+    updatedBy: {
+      name: string;
+    };
+    updatedAt: string;
+    isPrivate: boolean;
+    ownerId: string;
+    SharedNote: {
+      canEdit: boolean;
+    };
+  }
+
+  const [notes, setNotes] = useState<Note[] | null>(null);
   const [userId, setUserId] = useState<string>("");
   const router = useRouter();
   const [inpTitle, setInpTitle] = useState<string>("");
