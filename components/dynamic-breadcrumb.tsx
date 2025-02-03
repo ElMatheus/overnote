@@ -2,13 +2,11 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
 export function DynamicBreadcrumb() {

@@ -76,7 +76,12 @@ export async function GET(req: Request) {
       );
     }
 
-    let whereClause: any = {
+    const whereClause: {
+      OR: ({ ownerId: string } | { SharedNote: { some: { userId: string } } })[];
+      isPrivate?: boolean;
+      ownerId?: string;
+      SharedNote?: { some: { userId: string } };
+    } = {
       OR: [
         { ownerId: userId },
         { SharedNote: { some: { userId } } },

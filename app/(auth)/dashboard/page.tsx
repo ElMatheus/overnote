@@ -71,7 +71,6 @@ export default function Page() {
                 <Link href={`/notes/${notes[index].id}`} key={index}>
                   <CardNotes
                     key={index}
-                    id={notes[index].id}
                     title={notes[index].title}
                     content={notes[index].content}
                   />
@@ -80,7 +79,6 @@ export default function Page() {
                 <button onClick={handleCreateNote} key={index}>
                   <CardNotes
                     key={index}
-                    id={"ds"}
                     title={"Crie uma nova anotação"}
                     content={"Clique aqui para adicionar uma nova anotação."}
                   />

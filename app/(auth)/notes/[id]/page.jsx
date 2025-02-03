@@ -62,7 +62,7 @@ export default function NotePage() {
       }
     }
     fetchNote();
-  }, [id]);
+  }, [id, idUser]);
 
   useEffect(() => {
     if (editor && note.content) {
@@ -79,7 +79,7 @@ export default function NotePage() {
     }, 1000);
 
     return () => clearTimeout(handler);
-  }, [note, id, isPrivate]);
+  }, [note, id, isPrivate, idUser, editor]);
 
   return (
     <div className="flex flex-col min-h-screen p-6">

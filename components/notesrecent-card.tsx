@@ -1,6 +1,6 @@
 import { ArrowDownLeft } from 'lucide-react';
 
-export function CardNotes({ id, title, content }: { id: string, title: string, content: string }) {
+export function CardNotes({ title, content }: { title: string, content: string }) {
   return (
     <div className='w-full md:w-[450px] h-auto md:h-[268px] relative rounded-2xl bg-[#F9F9FA] p-8 overflow-hidden '>
       <div className='absolute top-0 right-0 bg-white p-2 rounded-bl-[2rem] '>

@@ -41,7 +41,7 @@ export default function Page() {
     }
 
     fetchNotes();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     async function fetchNotes() {
@@ -59,7 +59,7 @@ export default function Page() {
     }
 
     fetchNotes();
-  }, [privacy, position]);
+  }, [privacy, position, userId]);
 
   const togglePrivacy = (value: string) => {
     setPrivacy(privacy === value ? null : value);

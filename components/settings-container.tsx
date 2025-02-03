@@ -2,7 +2,22 @@ import { useState } from "react";
 import { shareNote, deleteNoteById } from "@/actions/notes.actions";
 import { useRouter } from "next/navigation";
 
-export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, users, noteId }: { isPrivate: boolean, setIsPrivate: Function, setShowSettings: Function, users: any, noteId: string }) {
+interface User {
+  id: string;
+  user: {
+    name: string;
+  };
+}
+
+interface SettingsContainerProps {
+  isPrivate: boolean;
+  setIsPrivate: (value: boolean) => void;
+  setShowSettings: (value: boolean) => void;
+  users: User[];
+  noteId: string;
+}
+
+export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, users, noteId }: SettingsContainerProps) {
   const router = useRouter();
   const [username, setUsername] = useState("");
 
@@ -22,7 +37,6 @@ export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, us
       router.back();
     }
   }
-
 
   return (
     <div className="fixed inset-y-0 right-0 w-1/3 bg-[#1E201F] shadow-lg p-6">
@@ -64,7 +78,7 @@ export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, us
             </button>
           </div>
           <ul className="mt-2 text-white">
-            {users && users.map((user: any) => (
+            {users && users.map((user: User) => (
               <li key={user.id} className="bg-gray-700 p-2 rounded mt-1">{user.user.name}</li>
             ))}
           </ul>
