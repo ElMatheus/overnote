@@ -3,11 +3,13 @@
 import { CardNotes } from "@/components/notes-card";
 import { Category } from "@/components/category-card";
 import { Plus, Search } from 'lucide-react';
-import { getNotesByUserId, getNotesByUserIdFiltredCategory } from "@/actions/notes.actions";
+import { createNote, getNotesByUserId, getNotesByUserIdFiltredCategory } from "@/actions/notes.actions";
 import { useState, useEffect } from "react";
 import { getSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const [notes, setNotes] = useState<any>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [privacy, setPrivacy] = useState<string | null>(null);
@@ -31,7 +33,6 @@ export default function Page() {
       if (userId) {
         if (privacy || position) {
           const data = await getNotesByUserIdFiltredCategory(userId, privacy, position);
-          console.log(data);
           if (data.length > 0) {
             setNotes(data);
           } else {
@@ -53,12 +54,21 @@ export default function Page() {
     setPosition(position === value ? null : value);
   };
 
+  const handleCreateNote = async () => {
+    if (userId) {
+      const newNote = await createNote(null, userId);
+      if (newNote.status == "success") {
+        router.push(`/notes/${newNote.data.id}`);
+      }
+    }
+  }
+
   return (
     <div className="flex flex-row p-10 gap-20">
 
       <div className="flex flex-col gap-4 w-full">
         {
-          notes ? (
+          notes != null && notes.length > 0 ? (
             notes.map((note: any) => (
               <CardNotes
                 id={note.id}
@@ -87,7 +97,7 @@ export default function Page() {
             <Search size={48} color="#fff" className="bg-[#1E201F] p-3 rounded-full" />
             <input placeholder="Search notes..." className="focus:outline-none font-normal bg-transparent text-xl text-[#1E201F]" type="text" />
           </div>
-          <Plus size={48} color="#fff" className="bg-[#1E201F] p-3 rounded-full" />
+          <Plus onClick={handleCreateNote} size={48} color="#fff" className="bg-[#1E201F] p-3 rounded-full cursor-pointer" />
         </div>
 
         <div className="flex flex-col gap-5 bg-[#F9F9FA] p-8 rounded-[3.5rem] self-end">
