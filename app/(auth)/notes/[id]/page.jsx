@@ -121,6 +121,7 @@ export default function NotePage() {
           setIsPrivate={setIsPrivate}
           setShowSettings={setShowSettings}
           users={usersShared}
+          noteId={id}
         />
       )}
     </div>

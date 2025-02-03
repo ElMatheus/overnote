@@ -1,7 +1,28 @@
 import { useState } from "react";
+import { shareNote, deleteNoteById } from "@/actions/notes.actions";
+import { useRouter } from "next/navigation";
 
-export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, users }: { isPrivate: boolean, setIsPrivate: Function, setShowSettings: Function, users: any }) {
+export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, users, noteId }: { isPrivate: boolean, setIsPrivate: Function, setShowSettings: Function, users: any, noteId: string }) {
+  const router = useRouter();
   const [username, setUsername] = useState("");
+
+  const handleShared = async () => {
+    if (username) {
+      const response = await shareNote(noteId, username);
+      if (response && response.status == "success") {
+        setUsername("");
+        window.location.reload();
+      }
+    }
+  }
+
+  const handleDelete = async () => {
+    const response = await deleteNoteById(noteId);
+    if (response && response.status == "success") {
+      router.back();
+    }
+  }
+
 
   return (
     <div className="fixed inset-y-0 right-0 w-1/3 bg-[#1E201F] shadow-lg p-6">
@@ -36,9 +57,9 @@ export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, us
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="p-2 rounded bg-gray-800 text-white w-full"
-              placeholder="Enter username"
+              placeholder="Enter email"
             />
-            <button className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button onClick={handleShared} className="bg-blue-500 text-white px-4 py-2 rounded">
               Add
             </button>
           </div>
@@ -48,8 +69,11 @@ export function SettingsContainer({ isPrivate, setIsPrivate, setShowSettings, us
             ))}
           </ul>
         </div>
-
-
+        <div className="mt-4">
+          <button onClick={handleDelete} className="bg-red-500 text-white px-4 py-2 rounded">
+            Delete Note
+          </button>
+        </div>
       </div>
     </div>
   );

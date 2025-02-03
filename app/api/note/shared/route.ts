@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { noteId, userId, canEdit } = await req.json();
+    const { noteId, userEmail, canEdit } = await req.json();
 
-    if (!noteId || !userId) {
+    if (!noteId || !userEmail) {
       return NextResponse.json(
-        { error: "Note ID and User ID are required" },
+        { error: "Note ID and User Email are required" },
         { status: 400 }
       );
     }
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     });
 
     const existingUser = await prisma.user.findUnique({
-      where: { id: userId },
+      where: { email: userEmail },
     });
 
     if (!existingNote) {
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     const ownerId = existingNote?.ownerId;
 
-    if (ownerId === userId) {
+    if (ownerId === existingUser.id) {
       return NextResponse.json(
         { error: "You can't share a note with yourself" },
         { status: 400 }
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       where: {
         noteId_userId: {
           noteId,
-          userId,
+          userId: existingUser.id,
         },
       },
     });
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     const sharedNote = await prisma.sharedNote.create({
       data: {
         noteId,
-        userId,
+        userId: existingUser.id,
         canEdit,
       },
     });

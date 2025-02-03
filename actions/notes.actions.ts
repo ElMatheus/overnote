@@ -90,3 +90,35 @@ export async function createNote(title: string | null, userId: string) {
     console.error('Error fetching data createNote', error);
   }
 }
+
+export async function shareNote(noteId: string, email: string) {
+  try {
+    const response = await fetch(`/api/note/shared`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        noteId: noteId,
+        userEmail: email,
+        canEdit: false,
+      }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data shareNote', error);
+  }
+}
+
+export async function deleteNoteById(noteId: string) {
+  try {
+    const response = await fetch(`/api/note/${noteId}`, {
+      method: 'DELETE',
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching data deleteNoteById', error);
+  }
+} 
